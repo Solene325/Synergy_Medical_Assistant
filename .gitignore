@@ -1,0 +1,39 @@
+# Environnement
+.env
+.env.*
+!.env.example
+.env.backup
+
+# Dépendances PHP
+/vendor
+
+# Dépendances Node.js
+/node_modules
+
+# Fichiers générés par Laravel
+/storage
+/bootstrap/cache/
+/public/storage
+
+# Logs
+*.log
+storage/logs/*
+
+# IDE et OS
+.DS_Store
+.idea/
+*.sublime-*
+
+# Fichiers temporaires
+*.tmp
+*.cache
+*.pid
+
+# Tests / rapports
+coverage/
+.phpunit.result.cache
+
+# Fichiers du projet (optionnels selon vos besoins)
+Homestead.json
+Homestead.yaml
+.env.backup
