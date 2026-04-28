@@ -31,7 +31,7 @@
             letter-spacing: -0.02em;
         }
 
-        /* Glass Card Effect - Identique au patient */
+        /* Glass Card Effect */
         .glass-card {
             background: var(--glass-bg);
             backdrop-filter: blur(8px);
@@ -48,7 +48,7 @@
             border-color: rgba(255, 255, 255, 0.9);
         }
 
-        /* Sidebar Styles - Identique au patient */
+        /* Sidebar Styles */
         .sidebar {
             background: linear-gradient(180deg, var(--primary) 0%, #3c838c 100%);
             backdrop-filter: blur(10px);
@@ -73,7 +73,7 @@
             border-left-color: var(--accent);
         }
 
-        /* Soft Icon - Identique au patient */
+        /* Soft Icon */
         .soft-icon {
             background: rgba(255, 255, 255, 0.6);
             backdrop-filter: blur(4px);
@@ -89,7 +89,7 @@
             transition: 0.3s;
         }
 
-        /* Blobs flottants - Identique au patient */
+        /* Blobs flottants */
         .blob {
             position: fixed;
             width: 400px;
@@ -125,7 +125,7 @@
             100% { transform: translate(-7%, 3%) scale(1.3); }
         }
 
-        /* Badge Styles */
+        /* Badge */
         .badge-accent {
             background: var(--accent);
             color: #3a4e5e;
@@ -135,18 +135,43 @@
             font-weight: 700;
         }
 
+        /* Count badge (rouge pour messages non lus) */
+        .unread-badge {
+            background: #ef4444;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: bold;
+            border-radius: 9999px;
+            min-width: 22px;
+            height: 22px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 6px;
+        }
+
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); }
             .sidebar.mobile-open { transform: translateX(0); }
             .main-content { margin-left: 0 !important; }
         }
+
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
+    @stack('styles')
 </head>
 <body class="overflow-x-hidden">
     <div class="blob top-20 left-10"></div>
     <div class="blob2 bottom-20 right-20"></div>
 
     <div class="flex min-h-screen">
+        <!-- Sidebar -->
         <aside class="sidebar w-72 fixed h-screen overflow-y-auto z-50" id="sidebar">
             <div class="p-6 border-b border-white/10">
                 <div class="flex items-center gap-3 mb-2">
@@ -165,6 +190,18 @@
                 <a href="{{ route('medecin.dashboard') }}" class="sidebar-link flex items-center gap-3 px-4 py-3.5 text-white {{ request()->routeIs('medecin.dashboard') ? 'active' : '' }}">
                     <i class="fas fa-chart-line w-5 text-lg"></i>
                     <span class="font-medium">Tableau de bord</span>
+                </a>
+
+                <!-- Messagerie avec compteur de non lus -->
+                <a href="{{ route('chat.index') }}" class="sidebar-link flex items-center gap-3 px-4 py-3.5 text-white {{ request()->routeIs('chat.*') ? 'active' : '' }}">
+                    <i class="fas fa-comment-dots w-5 text-lg"></i>
+                    <span class="font-medium flex-1">Messagerie</span>
+                    @php
+                        $unreadCount = Auth::user()->unreadMessages()->count();
+                    @endphp
+                    @if($unreadCount > 0)
+                        <span class="unread-badge">{{ $unreadCount }}</span>
+                    @endif
                 </a>
 
                 <a href="{{ route('medecin.patients.index') }}" class="sidebar-link flex items-center gap-3 px-4 py-3.5 text-white {{ request()->routeIs('medecin.patients.*') ? 'active' : '' }}">
@@ -200,11 +237,13 @@
             </div>
         </aside>
 
+        <!-- Main Content -->
         <main class="flex-1 ml-72 p-8 main-content">
             <button class="md:hidden fixed top-4 left-4 z-40 soft-icon" onclick="toggleSidebar()">
                 <i class="fas fa-bars"></i>
             </button>
 
+            <!-- Top Bar -->
             <div class="glass-card p-5 mb-8 flex items-center justify-between">
                 <div class="flex items-center gap-4">
                     <div class="soft-icon">
@@ -212,7 +251,9 @@
                     </div>
                     <div>
                         <p class="text-sm text-[#527a84] font-medium">Session Docteur</p>
-                        <p class="font-semibold text-[#2d4e57] text-lg">Dr. {{ Auth::user()->name ?? 'Expert' }}</p>
+                        <p class="font-semibold text-[#2d4e57] text-lg">
+                            Dr. {{ Auth::user()->prenom }} {{ Auth::user()->nom }}
+                        </p>
                     </div>
                 </div>
                 

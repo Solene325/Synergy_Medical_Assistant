@@ -259,6 +259,11 @@
             .sidebar {
                 transform: translateX(-100%);
                 transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100vh;
+                z-index: 1000;
             }
 
             .sidebar.mobile-open {
@@ -343,15 +348,18 @@
                     <span class="font-medium">Mes Prescriptions</span>
                 </a>
 
-                <a href="{{ route('patient.chat') }}" class="sidebar-link flex items-center gap-3 px-4 py-3.5 text-white {{ request()->routeIs('patient.chat') ? 'active' : '' }}">
-                <i class="fas fa-robot w-5 text-lg"></i>
-                <span class="font-medium">Chat IA</span>
-                <span class="ml-auto badge-info">Nouveau</span>
-                </a>
-
-                <a href="#" class="sidebar-link flex items-center gap-3 px-4 py-3.5 text-white">
-                    <i class="fas fa-user-doctor w-5 text-lg"></i>
-                    <span class="font-medium">Médecins</span>
+                <!-- Lien vers la messagerie (chat) -->
+                <a href="{{ route('chat.index') }}" class="sidebar-link flex items-center gap-3 px-4 py-3.5 text-white {{ request()->routeIs('chat.*') ? 'active' : '' }}">
+                    <i class="fas fa-comment-dots w-5 text-lg"></i>
+                    <span class="font-medium">Messagerie</span>
+                    @php
+                        $unreadCount = Auth::user()->unreadMessages()->count();
+                    @endphp
+                    @if($unreadCount > 0)
+                        <span class="ml-auto bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                            {{ $unreadCount }}
+                        </span>
+                    @endif
                 </a>
 
                 <a href="#" class="sidebar-link flex items-center gap-3 px-4 py-3.5 text-white">
@@ -364,7 +372,6 @@
                     <span class="font-medium">Mon Profil</span>
                 </a>
             </nav>
-            
 
             <!-- Logout -->
             <div class="p-4 absolute bottom-0 w-72 border-t border-white/10 bg-[#4f9da6]/20 backdrop-blur">
@@ -419,11 +426,11 @@
             overlay.classList.toggle('hidden');
         }
 
-        // Set active link based on current route
         document.addEventListener('DOMContentLoaded', function() {
             const currentPath = window.location.pathname;
             document.querySelectorAll('.sidebar-link').forEach(link => {
-                if (link.getAttribute('href') === currentPath) {
+                const href = link.getAttribute('href');
+                if (href && (href === currentPath || (currentPath.startsWith('/chat') && href === '{{ route('chat.index') }}'))) {
                     link.classList.add('active');
                 }
             });

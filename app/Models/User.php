@@ -62,4 +62,19 @@ class User extends Authenticatable
     {
         return $this->date_naissance?->age;
     }
+
+    public function sentMessages()
+    {
+        return $this->hasMany(Message::class, 'sender_id');
+    }
+
+    public function receivedMessages()
+    {
+        return $this->hasMany(Message::class, 'receiver_id');
+    }
+
+    public function unreadMessages()
+    {
+        return $this->hasMany(Message::class, 'receiver_id')->where('is_read', false);
+    }
 }

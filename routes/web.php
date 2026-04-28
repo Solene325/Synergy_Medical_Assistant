@@ -8,6 +8,8 @@ use App\Http\Controllers\Dashboard\AdminController;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Patient\MedecinController;
+use App\Http\Controllers\ChatController;
 
 // Page d'accueil
 Route::get('/', function () {
@@ -100,3 +102,17 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
 Route::get('/patient/chat', [App\Http\Controllers\Patient\ChatController::class, 'index'])->name('patient.chat');
 Route::post('/patient/chat/send', [App\Http\Controllers\Patient\ChatController::class, 'send'])->name('patient.chat.send');
+
+// Routes patient pour voir les médecins
+Route::middleware(['auth', 'role:patient'])->prefix('patient')->name('patient.')->group(function () {
+    Route::get('/medecins', [MedecinController::class, 'index'])->name('medecins.index');
+    Route::get('/medecins/{medecin}', [MedecinController::class, 'show'])->name('medecins.show');
+});
+
+// Routes de chat (accessible à tous les rôles authentifiés)
+Route::middleware('auth')->group(function () {
+    Route::get('/chat', [ChatController::class, 'index'])->name('chat.index');
+    Route::get('/chat/{user}', [ChatController::class, 'conversation'])->name('chat.conversation');
+    Route::post('/chat/{user}/send', [ChatController::class, 'sendMessage'])->name('chat.send');
+    Route::get('/chat/{user}/new', [ChatController::class, 'getNewMessages'])->name('chat.new');
+});
