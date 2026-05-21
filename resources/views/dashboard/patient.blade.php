@@ -97,7 +97,7 @@
                         <p class="text-[#527a84] mb-5 leading-relaxed">
                             Décrivez vos symptômes et obtenez une première analyse en quelques secondes grâce à notre intelligence artificielle.
                         </p>
-                        <a href="#" class="btn-soft-primary inline-flex items-center gap-2">
+                        <a href="{{ route('patient.chat') }}" class="btn-soft-primary inline-flex items-center gap-2">
                             <i class="fas fa-stethoscope"></i>
                             Démarrer maintenant
                         </a>
@@ -116,7 +116,7 @@
                         <p class="text-[#527a84] mb-5 leading-relaxed">
                             Besoin d'un avis médical professionnel ? Contactez nos médecins disponibles pour une consultation.
                         </p>
-                        <a href="#" class="btn-soft-primary inline-flex items-center gap-2" style="background: linear-gradient(135deg, #f9c7b5 0%, #ffd4c5 100%);">
+                        <a href="{{ route('chat.index') }}" class="btn-soft-primary inline-flex items-center gap-2" style="background: linear-gradient(135deg, #f9c7b5 0%, #ffd4c5 100%);">
                             <i class="fas fa-comments"></i>
                             Prendre rendez-vous
                         </a>

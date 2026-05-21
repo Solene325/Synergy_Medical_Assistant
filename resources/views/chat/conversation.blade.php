@@ -10,9 +10,6 @@
 <div class="container mx-auto px-4 sm:px-6 py-6 max-w-5xl">
     <!-- En-tête conversation -->
     <div class="flex flex-wrap items-center gap-4 mb-6">
-        <a href="{{ route('chat.index') }}" class="inline-flex items-center gap-2 text-[#4f9da6] hover:underline">
-            <i class="fas fa-arrow-left"></i> Retour
-        </a>
         <div class="flex items-center gap-4 bg-white/30 backdrop-blur-sm rounded-2xl px-5 py-3 flex-1">
             <div class="w-14 h-14 rounded-full bg-white/50 flex items-center justify-center overflow-hidden shadow-md">
                 @if($user->photo_profil)
@@ -140,7 +137,8 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'X-Requested-With': 'XMLHttpRequest'
                     },
                     body: JSON.stringify({ message: msg })
                 });

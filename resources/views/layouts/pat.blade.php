@@ -348,6 +348,11 @@
                     <span class="font-medium">Mes Prescriptions</span>
                 </a>
 
+                        <a href="{{ route('patient.chat') }}" class="sidebar-link flex items-center gap-3 px-4 py-3.5 text-white">
+                    <i class="fas fa-robot w-5 text-lg"></i>
+                    <span class="font-medium">SynergyAI</span>
+                </a>
+
                 <!-- Lien vers la messagerie (chat) -->
                 <a href="{{ route('chat.index') }}" class="sidebar-link flex items-center gap-3 px-4 py-3.5 text-white {{ request()->routeIs('chat.*') ? 'active' : '' }}">
                     <i class="fas fa-comment-dots w-5 text-lg"></i>
