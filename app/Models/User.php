@@ -12,27 +12,32 @@ class User extends Authenticatable
 
     protected $fillable = [
         'prenom', 'nom', 'email', 'telephone', 'photo_profil', 'piece_identite',
-        'date_naissance', 'poids', 'taille', 'groupe_sanguin',
+        'date_naissance', 'poids','sexe','taille', 'groupe_sanguin',
         'antecedents_personnels', 'antecedents_familiaux',
-        'password', 'identifiant_unique', 'politiques_acceptees_at',
-        'doit_changer_mdp', 'role', 'email_verified_at'
+        'adresse', 'adresse_rue', 'ville', 'code_postal', 'pays',
+        'latitude', 'longitude', 'telephone_urgence',
+        'langue_preferee', 'role', 'identifiant_unique', 'password',
+        'doit_changer_mdp', 'email_verified_at', 'politiques_acceptees_at',
+        'last_login_at', 'est_actif', 'specialite', 'diplome', 'presentation','medical_summary',
     ];
 
     protected $hidden = [
         'password', 'remember_token',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-            'date_naissance' => 'date',
-            'politiques_acceptees_at' => 'datetime',
-            'last_login_at' => 'datetime',
-        ];
-    }
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'politiques_acceptees_at' => 'datetime',
+        'last_login_at' => 'datetime',
+        'date_naissance' => 'date',
+        'est_actif' => 'boolean',
+        'doit_changer_mdp' => 'boolean',
+        'latitude' => 'decimal:8',
+        'longitude' => 'decimal:8',
+        'medical_summary' => 'array',
+    ];
 
+    // Relations et autres méthodes (existantes)
     public function verificationCodes()
     {
         return $this->hasMany(VerificationCode::class);
@@ -57,7 +62,7 @@ class User extends Authenticatable
     {
         return $this->hasMany(Consultation::class, 'medecin_id');
     }
-    
+
     public function getAgeAttribute()
     {
         return $this->date_naissance?->age;
@@ -77,4 +82,41 @@ class User extends Authenticatable
     {
         return $this->hasMany(Message::class, 'receiver_id')->where('is_read', false);
     }
+
+    public function getSexeLabelAttribute(): string
+    {
+        return match ($this->sexe) {
+            'M' => 'Masculin',
+            'F' => 'Féminin',
+            'A' => 'Autre',
+            default => 'Non renseigné',
+        };
+    }
+
+    // Accesseur pour l'IMC
+    public function getImcAttribute()
+    {
+        if ($this->poids && $this->taille && $this->taille > 0) {
+            return round($this->poids / (($this->taille / 100) ** 2), 1);
+     }
+        return null;
+    }
+
+    public function medecin()
+    {
+        return $this->belongsTo(User::class, 'medecin_id');
+    }
+
+    // Un patient peut avoir un médecin traitant
+    public function medecinTraitant()
+    {
+        return $this->belongsTo(User::class, 'medecin_id');
+    }
+
+    // Un médecin a plusieurs patients
+    public function patients()
+    {
+        return $this->hasMany(User::class, 'medecin_id');
+    }
+
 }

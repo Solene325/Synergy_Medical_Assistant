@@ -33,4 +33,9 @@ class Prescription extends Model
     {
         return $this->belongsTo(Medicament::class);
     }
+
+    public function distributeurCode()
+    {
+        return $this->hasOne(DistributeurCode::class);
+    }
 }

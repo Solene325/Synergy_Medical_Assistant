@@ -1,4 +1,4 @@
-@extends('layouts.pat')
+@extends('layouts.chat')
 @section('title', 'Médecins disponibles')
 @section('content')
 <div class="container mx-auto px-6 py-12">

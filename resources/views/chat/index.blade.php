@@ -1,6 +1,6 @@
 @php
     $userRole = Auth::user()->role;
-    $layout = $userRole === 'medecin' ? 'layouts.medecin' : 'layouts.pat';
+    $layout = $userRole === 'medecin' ? 'layouts.medecin' : 'layouts.patient';
 @endphp
 
 @extends($layout)

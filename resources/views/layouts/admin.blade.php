@@ -1,116 +1,191 @@
 {{-- resources/views/layouts/admin.blade.php --}}
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Administration · SynergyAI')</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.0/dist/cdn.min.js"></script>
+
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#0A4A3B',
+                        'primary-light': '#1A6B57',
+                        'primary-dark': '#07362B',
+                        'accent': '#D97742',
+                        'accent-light': '#F0C8A9',
+                        'gold': '#C49A3E',
+                        'gold-light': '#EAD7A0',
+                        'slate': '#2C5A7A',
+                        'slate-light': '#7AAAC2',
+                        'cream': '#F8F5EF',
+                        'sand': '#EDE6D8',
+                        'warm-gray': '#6B5F51',
+                        'soft-blue': '#E6F0F5',
+                        'soft-green': '#E6F4EC',
+                        'soft-peach': '#FDF0E8',
+                    },
+                    fontFamily: {
+                        'display': ['"Outfit"', 'sans-serif'],
+                        'body': ['"DM Sans"', 'sans-serif'],
+                    },
+                    borderRadius: {
+                        '2xl': '1.25rem',
+                        '3xl': '1.75rem',
+                        '4xl': '2.25rem',
+                    },
+                    boxShadow: {
+                        'soft': '0 8px 30px -8px rgba(10, 74, 59, 0.08)',
+                        'soft-lg': '0 20px 50px -12px rgba(10, 74, 59, 0.12)',
+                        'inner-soft': 'inset 0 2px 8px rgba(255,255,255,0.5)',
+                        'glow': '0 0 30px rgba(210, 168, 67, 0.15)',
+                        'glow-primary': '0 0 40px rgba(10, 74, 59, 0.12)',
+                    },
+                }
+            }
+        }
+    </script>
+
     <style>
         :root {
-            --primary: #4f9da6;
-            --secondary: #a7d0cd;
-            --accent: #f9c7b5;
-            --light: #f9f3e8;
-            --soft-blue: #d4f1f9;
-            --soft-white: #fff9f2;
-            --glass-bg: rgba(255, 255, 255, 0.5);
-            --glass-border: rgba(255, 255, 255, 0.6);
+            --primary: #0A4A3B;
+            --primary-light: #1A6B57;
+            --accent: #D97742;
+            --gold: #C49A3E;
+            --slate: #2C5A7A;
+            --cream: #F8F5EF;
+            --sand: #EDE6D8;
+            --warm-gray: #6B5F51;
         }
-
+        * { scroll-behavior: smooth; }
         body {
-            font-family: 'Quicksand', sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #e9f0f5 100%);
-            color: #3a4e5e;
-            min-height: 100vh;
+            font-family: 'DM Sans', sans-serif;
+            background-color: var(--cream);
+            color: #3A3A3A;
         }
-
-        h1, h2, h3, h4 {
-            font-family: 'Inter', sans-serif;
-            font-weight: 600;
+        h1, h2, h3, h4, .font-display {
+            font-family: 'Outfit', sans-serif;
             letter-spacing: -0.02em;
         }
 
-        /* Glass Card Effect */
+        /* Glass morphism */
         .glass-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid var(--glass-border);
-            border-radius: 32px;
-            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.1);
-            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            border-radius: 1.75rem;
+            box-shadow: 0 8px 32px -8px rgba(10, 74, 59, 0.06);
+            transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
-
         .glass-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 30px 50px -20px rgba(79, 157, 166, 0.2);
-            border-color: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.85);
+            box-shadow: 0 16px 48px -12px rgba(10, 74, 59, 0.12);
+            transform: translateY(-2px);
         }
 
-        /* Sidebar Styles (version admin) */
+        /* Sidebar admin (inspirée du patient) */
         .sidebar {
-            background: linear-gradient(180deg, #2d5a63 0%, #1f4047 100%);
-            backdrop-filter: blur(10px);
-            box-shadow: 4px 0 30px rgba(0, 0, 0, 0.12);
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(255, 255, 255, 0.6);
+            width: 76px;
+            transition: width 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .sidebar:hover { width: 220px; }
+        .sidebar .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.7rem 1rem;
+            border-radius: 1.25rem;
+            transition: all 0.2s;
+            color: var(--warm-gray);
+            white-space: nowrap;
+            overflow: hidden;
+            font-weight: 500;
+        }
+        .sidebar .nav-item i {
+            width: 1.5rem;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+        .sidebar .nav-item span {
+            opacity: 0;
+            transition: opacity 0.25s;
+        }
+        .sidebar:hover .nav-item span { opacity: 1; }
+        .sidebar .nav-item.active {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            box-shadow: 0 8px 20px -4px rgba(10,74,59,0.3);
+        }
+        .sidebar .nav-item.active i { color: white; }
+        .sidebar .nav-item:not(.active):hover {
+            background: rgba(10,74,59,0.06);
+            color: var(--primary);
         }
 
-        .sidebar-link {
-            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            border-left: 4px solid transparent;
-            border-radius: 16px;
-        }
-
-        .sidebar-link:hover {
-            background: rgba(255, 255, 255, 0.12);
-            border-left-color: var(--accent);
-            transform: translateX(6px);
-        }
-
-        .sidebar-link.active {
-            background: rgba(249, 199, 181, 0.25);
-            border-left-color: var(--accent);
-        }
-
-        /* Stat Cards */
-        .stat-card-soft {
-            background: rgba(255, 255, 255, 0.7);
+        /* Inputs et boutons (identiques à patient) */
+        .input-field {
+            background: rgba(255,255,255,0.5);
             backdrop-filter: blur(4px);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            border-radius: 28px;
-            padding: 1.5rem;
-            transition: all 0.4s ease;
+            border: 1px solid rgba(255,255,255,0.6);
+            border-radius: 2rem;
+            padding: 0.6rem 1.2rem;
+            outline: none;
+            transition: all 0.25s;
+            font-size: 0.9rem;
+        }
+        .input-field:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(217, 119, 66, 0.15);
+            background: rgba(255,255,255,0.8);
         }
 
-        .stat-card-soft:hover {
-            background: rgba(255, 255, 255, 0.9);
-            transform: translateY(-6px);
-            box-shadow: 0 25px 40px -18px var(--primary);
-        }
-
-        /* Button Styles */
-        .btn-soft-primary {
-            background: var(--primary);
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
             color: white;
             border: none;
-            border-radius: 40px;
-            padding: 12px 28px;
+            border-radius: 3rem;
+            padding: 0.6rem 1.8rem;
             font-weight: 600;
-            box-shadow: 0 10px 20px -8px rgba(79, 157, 166, 0.3);
+            font-family: 'Outfit', sans-serif;
+            box-shadow: 0 6px 18px -4px rgba(10,74,59,0.25);
             transition: all 0.3s ease;
+            cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 0.5rem;
         }
-
-        .btn-soft-primary:hover {
-            background: #3c838c;
-            transform: translateY(-3px);
-            box-shadow: 0 18px 25px -10px var(--primary);
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px -6px rgba(10,74,59,0.35);
         }
-
+        .btn-accent {
+            background: linear-gradient(135deg, var(--accent), #c46a37);
+            color: white;
+        }
+        .btn-accent:hover {
+            box-shadow: 0 12px 28px -6px rgba(217,119,66,0.4);
+        }
         .btn-outline-danger {
             border: 1px solid #e53e3e;
             color: #e53e3e;
@@ -124,157 +199,65 @@
             color: white;
         }
 
-        /* Soft Icon */
-        .soft-icon {
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(4px);
-            border-radius: 24px;
-            width: 50px;
-            height: 50px;
+        /* Lang dropdown */
+        .lang-dropdown {
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.6);
+            border-radius: 1.25rem;
+            box-shadow: 0 16px 40px -8px rgba(10,74,59,0.12);
+            padding: 0.5rem;
+            min-width: 180px;
+            display: none;
+        }
+        .lang-dropdown.show { display: block; }
+        .lang-option {
+            padding: 0.4rem 0.8rem;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: background 0.15s;
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            color: var(--primary);
-            box-shadow: 0 8px 20px rgba(79, 157, 166, 0.1);
-            transition: 0.3s;
+            gap: 0.6rem;
+            font-size: 0.9rem;
         }
-
-        .soft-icon:hover {
-            background: white;
-            transform: scale(1.1) rotate(2deg);
-        }
-
-        /* Badge Styles */
-        .badge-success {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
-            padding: 0.35rem 1rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .badge-danger {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.7rem;
-        }
+        .lang-option:hover { background: rgba(10,74,59,0.05); }
+        .lang-option.active { background: rgba(10,74,59,0.08); font-weight: 600; }
 
         /* Scrollbar */
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--light);
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--secondary);
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--primary);
-        }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
 
-        /* User Avatar */
-        .user-avatar {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 700;
-            font-size: 1.1rem;
-            box-shadow: 0 4px 12px rgba(79, 157, 166, 0.3);
-        }
-
-        /* Blobs flottants */
-        .blob {
-            position: fixed;
-            width: 400px;
-            height: 400px;
-            background: linear-gradient(180deg, var(--secondary) 0%, var(--accent) 100%);
-            border-radius: 50%;
-            filter: blur(70px);
-            opacity: 0.15;
-            animation: floatBlob 20s infinite alternate ease-in-out;
-            z-index: -1;
-            pointer-events: none;
-        }
-        .blob2 {
-            width: 350px;
-            height: 350px;
-            background: var(--soft-blue);
-            filter: blur(80px);
-            opacity: 0.2;
-            animation: floatBlob2 18s infinite alternate;
-        }
-        @keyframes floatBlob {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(5%, 5%) scale(1.2); }
-        }
-        @keyframes floatBlob2 {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(-7%, 3%) scale(1.3); }
-        }
-
-        /* Mobile Responsive */
-        @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-                transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-                z-index: 60;
-            }
-            .sidebar.mobile-open {
-                transform: translateX(0);
-            }
-            .main-content {
-                margin-left: 0 !important;
-            }
-        }
-
-        /* Section Title */
-        .section-title-soft {
-            position: relative;
-            display: inline-block;
-            padding-bottom: 12px;
-        }
-        .section-title-soft::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 80px;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary), var(--accent));
-            border-radius: 4px;
-            opacity: 0.7;
-        }
-
-        /* Notification badge */
+        /* Badge notification */
         .notification-badge {
             position: absolute;
-            top: -4px;
-            right: -4px;
+            top: -2px;
+            right: -2px;
             width: 18px;
             height: 18px;
             background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
             border-radius: 50%;
             border: 2px solid white;
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
         }
 
-        /* Table styling */
+        /* Effet glow sur les cartes stats */
+        .stat-card-glow {
+            box-shadow: 0 8px 32px -8px rgba(10, 74, 59, 0.08), 0 0 0 1px rgba(255,255,255,0.5);
+            transition: all 0.3s ease;
+        }
+        .stat-card-glow:hover {
+            box-shadow: 0 16px 48px -12px rgba(10, 74, 59, 0.15), 0 0 30px rgba(217, 119, 66, 0.08);
+            transform: translateY(-4px);
+        }
+
+        /* Table stylée */
         .data-table {
             width: 100%;
             border-collapse: collapse;
@@ -283,147 +266,229 @@
             text-align: left;
             padding: 12px 8px;
             font-weight: 600;
-            color: #2d4e57;
-            border-bottom: 1px solid rgba(79,157,166,0.2);
+            color: var(--primary);
+            border-bottom: 1px solid rgba(10,74,59,0.08);
         }
         .data-table td {
             padding: 12px 8px;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
+            border-bottom: 1px solid rgba(0,0,0,0.04);
         }
         .data-table tr:hover {
-            background: rgba(255,255,255,0.4);
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* Section title */
+        .section-title-soft {
+            position: relative;
+            display: inline-block;
+            padding-bottom: 8px;
+        }
+        .section-title-soft::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 4px;
+            opacity: 0.6;
+        }
+
+        /* Responsive sidebar mobile */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                z-index: 40;
+                width: 260px;
+            }
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0 !important;
+            }
+            .sidebar-overlay {
+                display: none;
+                position: fixed;
+                inset: 0;
+                background: rgba(0,0,0,0.15);
+                backdrop-filter: blur(4px);
+                z-index: 39;
+            }
+            .sidebar-overlay.show {
+                display: block;
+            }
         }
     </style>
     @stack('styles')
 </head>
 <body>
-    <!-- Blobs flottants -->
-    <div class="blob fixed top-20 left-10"></div>
-    <div class="blob2 fixed bottom-20 right-20"></div>
 
-    <div class="flex min-h-screen">
-        <!-- Sidebar Admin -->
-        <aside class="sidebar w-72 fixed h-screen overflow-y-auto z-50" id="sidebar">
-            <div class="p-6 border-b border-white/15">
-                <div class="flex items-center gap-3 mb-2">
-                    <div class="w-12 h-12 bg-white/15 backdrop-blur rounded-2xl flex items-center justify-center">
-                        <i class="fas fa-shield-alt text-2xl text-white"></i>
-                    </div>
-                    <div>
-                        <h1 class="text-xl font-bold text-white">SynergyAI</h1>
-                        <p class="text-xs text-white/70">Administration</p>
-                    </div>
+<div x-data="{
+    lang: localStorage.getItem('synergyLang') || 'fr',
+    langs: [
+        { code: 'fr', name: 'Français', flag: '🇫🇷' },
+        { code: 'en', name: 'English', flag: '🇬🇧' },
+        { code: 'pt', name: 'Português', flag: '🇵🇹' },
+        { code: 'sw', name: 'Kiswahili', flag: '🇹🇿' },
+        { code: 'ha', name: 'Hausa', flag: '🇳🇬' },
+        { code: 'yo', name: 'Yorùbá', flag: '🇳🇬' },
+        { code: 'ar', name: 'العربية', flag: '🇲🇦' }
+    ],
+    setLang(code) {
+        this.lang = code;
+        localStorage.setItem('synergyLang', code);
+        // Vous pouvez déclencher un événement ou recharger la page si nécessaire
+    },
+    mobileSidebarOpen: false,
+    toggleMobileSidebar() {
+        this.mobileSidebarOpen = !this.mobileSidebarOpen;
+        document.getElementById('sidebar').classList.toggle('mobile-open');
+        document.getElementById('sidebarOverlay').classList.toggle('show');
+    }
+}" x-init="() => { document.getElementById('sidebarOverlay').addEventListener('click', () => toggleMobileSidebar()); }">
+
+    <!-- Overlay pour mobile -->
+    <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+    <!-- ========================================= -->
+    <!-- SIDEBAR ADMIN                             -->
+    <!-- ========================================= -->
+    <aside id="sidebar" class="sidebar fixed top-0 left-0 h-full z-30 flex flex-col justify-between py-6 px-3">
+        <!-- Logo -->
+        <div>
+            <div class="flex items-center gap-3 px-2 mb-8">
+                <div class="w-10 h-10 bg-white/80 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-sm border border-white/60">
+                    <i class="fas fa-shield-alt text-2xl text-primary"></i>
                 </div>
-                <span class="inline-block px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full text-xs text-white/80 border border-white/20">Panel Admin</span>
+                <span class="font-display font-semibold text-primary text-xl whitespace-nowrap opacity-0 transition-opacity sidebar:hover:opacity-100">SynergyAI</span>
             </div>
 
-            <nav class="p-4 space-y-2">
-                <a href="{{ route('admin.dashboard') }}" class="sidebar-link flex items-center gap-3 px-4 py-3.5 text-white {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-                    <i class="fas fa-chart-line w-5 text-lg"></i>
-                    <span class="font-medium">Tableau de bord</span>
+            <!-- Navigation -->
+            <nav class="flex flex-col gap-1.5">
+                <a href="{{ route('admin.dashboard') }}" class="nav-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Tableau de bord</span>
                 </a>
-                <a href="{{ route('admin.users') }}" class="sidebar-link flex items-center gap-3 px-4 py-3.5 text-white {{ request()->routeIs('admin.users') ? 'active' : '' }}">
-                    <i class="fas fa-users w-5 text-lg"></i>
-                    <span class="font-medium">Utilisateurs</span>
+                <a href="{{ route('admin.users') }}" class="nav-item {{ request()->routeIs('admin.users') ? 'active' : '' }}">
+                    <i class="fas fa-users"></i>
+                    <span>Utilisateurs</span>
                 </a>
-                <a href="{{ route('admin.medicaments') }}" class="sidebar-link flex items-center gap-3 px-4 py-3.5 text-white {{ request()->routeIs('admin.medicaments') ? 'active' : '' }}">
-                    <i class="fas fa-capsules w-5 text-lg"></i>
-                    <span class="font-medium">Médicaments</span>
+                <a href="{{ route('admin.medicaments') }}" class="nav-item {{ request()->routeIs('admin.medicaments') ? 'active' : '' }}">
+                    <i class="fas fa-capsules"></i>
+                    <span>Médicaments</span>
                 </a>
-                <a href="{{ route('admin.device-data') }}" class="sidebar-link flex items-center gap-3 px-4 py-3.5 text-white {{ request()->routeIs('admin.device-data') ? 'active' : '' }}">
-                    <i class="fas fa-microchip w-5 text-lg"></i>
-                    <span class="font-medium">Appareil tiers</span>
-                    <span class="ml-auto text-[10px] bg-yellow-400/30 text-yellow-100 px-2 py-0.5 rounded-full">Bientôt</span>
+                <a href="{{ route('admin.device-data') }}" class="nav-item {{ request()->routeIs('admin.device-data') ? 'active' : '' }}">
+                    <i class="fas fa-microchip"></i>
+                    <span>Appareil tiers</span>
+                    <span class="ml-auto text-[10px] bg-yellow-400/30 text-yellow-800 px-2 py-0.5 rounded-full">Bientôt</span>
                 </a>
             </nav>
+        </div>
 
-            <div class="p-4 absolute bottom-0 w-72 border-t border-white/15 bg-[#2d5a63]/40 backdrop-blur-sm">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="user-avatar">
-                        {{ strtoupper(substr(Auth::user()->prenom ?? 'A', 0, 1)) }}{{ strtoupper(substr(Auth::user()->nom ?? 'D', 0, 1)) }}
-                    </div>
-                    <div class="flex-1">
-                        <p class="text-white text-sm font-semibold">{{ Auth::user()->prenom }} {{ Auth::user()->nom }}</p>
-                        <p class="text-[#cde3e0] text-xs">{{ Auth::user()->email }}</p>
-                    </div>
+        <!-- Footer sidebar : utilisateur + déconnexion -->
+        <div class="flex flex-col gap-1.5 px-2 border-t border-white/30 pt-4">
+            <div class="flex items-center gap-3 px-2 py-2 rounded-xl hover:bg-white/20 transition">
+                <div class="w-9 h-9 rounded-full bg-gradient-to-br from-primary to-primary-light text-white flex items-center justify-center font-bold text-sm shadow-md">
+                    {{ strtoupper(substr(auth()->user()->prenom ?? 'A', 0, 1)) }}{{ strtoupper(substr(auth()->user()->nom ?? 'D', 0, 1)) }}
                 </div>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit" class="sidebar-link flex items-center gap-3 px-4 py-3 text-white rounded-2xl w-full hover:bg-red-500/20">
-                        <i class="fas fa-sign-out-alt w-5 text-lg"></i>
-                        <span class="font-medium">Déconnexion</span>
-                    </button>
-                </form>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-semibold text-primary truncate">{{ auth()->user()->prenom ?? '' }} {{ auth()->user()->nom ?? '' }}</p>
+                    <p class="text-xs text-warm-gray truncate">{{ auth()->user()->email ?? '' }}</p>
+                </div>
             </div>
-        </aside>
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" class="nav-item w-full text-left">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Déconnexion</span>
+                </button>
+            </form>
+        </div>
+    </aside>
 
-        <!-- Main Content -->
-        <main class="flex-1 ml-72 p-8 main-content">
-            <!-- Mobile Menu Toggle -->
-            <button class="md:hidden fixed top-4 left-4 z-40 soft-icon" onclick="toggleSidebar()">
+    <!-- ========================================= -->
+    <!-- MAIN CONTENT                             -->
+    <!-- ========================================= -->
+    <div class="flex-1 ml-[76px] transition-all duration-350 sidebar:hover:ml-[220px] main-content">
+
+        <!-- Header avec sélecteur de langue, notifs, etc. -->
+        <header class="sticky top-0 z-20 bg-cream/60 backdrop-blur-xl border-b border-white/40 px-6 py-3 flex items-center justify-between flex-wrap gap-4">
+            <!-- Bouton menu mobile -->
+            <button @click="toggleMobileSidebar()" class="md:hidden text-2xl text-primary">
                 <i class="fas fa-bars"></i>
             </button>
 
-            <!-- TOP BAR : visible uniquement sur la page d'accueil du dashboard admin -->
-            @if(request()->routeIs('admin.dashboard'))
-            <div class="glass-card p-5 mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <div class="flex items-center gap-4">
-                    <div class="soft-icon">
-                        <i class="fas fa-calendar-day"></i>
-                    </div>
-                    <div>
-                        <p class="text-sm text-[#527a84] font-medium">Aujourd'hui</p>
-                        <p class="font-semibold text-[#2d4e57] text-lg">{{ now()->locale('fr')->isoFormat('dddd D MMMM YYYY') }}</p>
+            <!-- Search -->
+            <div class="relative flex-1 min-w-[200px] max-w-md">
+                <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-warm-gray/40"></i>
+                <input type="text" placeholder="Rechercher..." class="input-field pl-10 h-10 text-sm w-full">
+            </div>
+
+            <!-- Actions + langue -->
+            <div class="flex items-center gap-4">
+                <!-- Sélecteur de langue -->
+                <div class="relative" @click.away="$refs.langDropdown.classList.remove('show')">
+                    <button @click="$refs.langDropdown.classList.toggle('show')" class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/60 backdrop-blur-sm border border-white/50 text-sm text-warm-gray hover:text-primary transition">
+                        <span x-text="langs.find(l => l.code === lang)?.flag || '🇫🇷'"></span>
+                        <span class="hidden sm:inline" x-text="langs.find(l => l.code === lang)?.name || 'Français'"></span>
+                        <i class="fas fa-chevron-down text-xs"></i>
+                    </button>
+                    <div x-ref="langDropdown" class="lang-dropdown absolute right-0 mt-2">
+                        <template x-for="l in langs" :key="l.code">
+                            <div @click="setLang(l.code); $refs.langDropdown.classList.remove('show')" class="lang-option" :class="{ 'active': lang === l.code }">
+                                <span x-text="l.flag"></span>
+                                <span x-text="l.name"></span>
+                            </div>
+                        </template>
                     </div>
                 </div>
-                <div class="flex items-center gap-4">
-                    <button class="relative soft-icon hover:scale-110 transition-transform">
-                        <i class="fas fa-bell"></i>
-                        <span class="notification-badge"></span>
-                    </button>
-                    <div class="hidden sm:flex items-center gap-2 bg-white/40 backdrop-blur-sm px-4 py-2 rounded-full">
-                        <i class="fas fa-circle text-[10px] text-green-500"></i>
-                        <span class="text-sm font-medium text-[#2d4e57]">Système opérationnel</span>
+
+                <!-- Notifications -->
+                <button class="relative w-10 h-10 rounded-full bg-white/60 backdrop-blur-sm flex items-center justify-center text-warm-gray hover:text-primary transition border border-white/50">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </button>
+                <!-- Messages -->
+                <button class="relative w-10 h-10 rounded-full bg-white/60 backdrop-blur-sm flex items-center justify-center text-warm-gray hover:text-primary transition border border-white/50">
+                    <i class="fas fa-envelope"></i>
+                    <span class="notification-badge">5</span>
+                </button>
+
+                <!-- Avatar utilisateur (visible sur desktop) -->
+                <div class="hidden sm:flex items-center gap-2 pl-3 border-l border-white/50">
+                    <div class="w-9 h-9 rounded-full bg-gradient-to-br from-primary to-primary-light text-white flex items-center justify-center font-bold text-sm shadow-md">
+                        {{ strtoupper(substr(auth()->user()->prenom ?? 'A', 0, 1)) }}{{ strtoupper(substr(auth()->user()->nom ?? 'D', 0, 1)) }}
+                    </div>
+                    <div class="text-sm leading-tight">
+                        <p class="font-semibold text-primary">{{ auth()->user()->prenom ?? '' }} {{ auth()->user()->nom ?? '' }}</p>
+                        <p class="text-xs text-warm-gray">Administrateur</p>
                     </div>
                 </div>
             </div>
-            @endif
+        </header>
 
-            <!-- Messages flash (succès / erreur) : visibles sur toutes les pages -->
+        <!-- Contenu principal -->
+        <main class="p-6 lg:p-8">
+            <!-- Messages flash -->
             @if(session('success'))
-                <div class="mb-6 px-5 py-4 rounded-2xl bg-green-100/80 backdrop-blur-sm border-l-4 border-green-500 text-green-800">
+                <div class="mb-6 px-5 py-4 rounded-2xl bg-green-100/80 backdrop-blur-sm border-l-4 border-green-500 text-green-800 glass-card">
                     {{ session('success') }}
                 </div>
             @endif
             @if(session('error'))
-                <div class="mb-6 px-5 py-4 rounded-2xl bg-red-100/80 backdrop-blur-sm border-l-4 border-red-500 text-red-800">
+                <div class="mb-6 px-5 py-4 rounded-2xl bg-red-100/80 backdrop-blur-sm border-l-4 border-red-500 text-red-800 glass-card">
                     {{ session('error') }}
                 </div>
             @endif
-
             @yield('content')
         </main>
     </div>
 
-    <!-- Overlay pour mobile -->
-    <div class="menu-overlay fixed inset-0 bg-black/20 backdrop-blur-sm z-40 hidden" id="menuOverlay" onclick="toggleSidebar()"></div>
+</div>
 
-    <script>
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('menuOverlay');
-            sidebar.classList.toggle('mobile-open');
-            overlay.classList.toggle('hidden');
-        }
-        // Fermer la sidebar si on clique sur un lien (mobile)
-        document.querySelectorAll('.sidebar-link').forEach(link => {
-            link.addEventListener('click', () => {
-                if (window.innerWidth < 768) {
-                    toggleSidebar();
-                }
-            });
-        });
-    </script>
-    @stack('scripts')
+@stack('scripts')
 </body>
 </html>

@@ -1,4 +1,4 @@
-@extends('layouts.pat')
+@extends('layouts.chat')
 @section('title', 'Dr. ' . $medecin->nom)
 @section('content')
 <div class="container mx-auto px-6 py-12 max-w-3xl">

@@ -1,39 +1,37 @@
-# Environnement
+# Fichiers sensibles
 .env
 .env.*
 !.env.example
-.env.backup
 
-# Dépendances PHP
+# Dépendances
 /vendor
-
-# Dépendances Node.js
 /node_modules
 
-# Fichiers générés par Laravel
-/storage
-/bootstrap/cache/
-/public/storage
+# Cache et logs
+/storage/*.log
+/storage/app/public/*
+/storage/framework/*
+/storage/logs/*
+!storage/.gitkeep
+/bootstrap/cache/*
+/public/hot
+public/storage
+public/css
+public/js
+public/mix-manifest.json
 
-# Logs
-*.log
-storage/logs/*
-
-# IDE et OS
+# IDE et systèmes
 .DS_Store
+Thumbs.db
 .idea/
+.vscode/
 *.sublime-*
 
-# Fichiers temporaires
-*.tmp
-*.cache
-*.pid
-
-# Tests / rapports
-coverage/
+# Tests et rapports
+coverage
 .phpunit.result.cache
+phpunit.xml
 
-# Fichiers du projet (optionnels selon vos besoins)
-Homestead.json
-Homestead.yaml
-.env.backup
+# Autres
+*.sqlite
+*.sqlite-journal

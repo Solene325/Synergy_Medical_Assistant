@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Medicament;
 use App\Models\Prescription;
 use App\Models\User;
+use App\Models\DistributeurCode;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
 class PrescriptionController extends Controller
@@ -39,7 +41,14 @@ class PrescriptionController extends Controller
 
         return redirect()->route('medecin.patients.show', $patient->id)
             ->with('success', 'Prescription ajoutée.');
-    }
+
+        // Génération du code du distributeur
+        $code = strtoupper(Str::random(8));
+        DistributeurCode::create([
+                'prescription_id' => $prescription->id,
+                'code' => $code,
+                'expires_at' => now()->addDays(30), // valable 30 jours
+        }
 
     public function edit(Prescription $prescription)
     {
